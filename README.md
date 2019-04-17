@@ -12,7 +12,7 @@ This repo aims to benchmark RedisAI against everything else which includes
 Models used in for the benchmark will be autodownloaded if it doesn't exist in the `data` directory. However, if requires, it can be manually [downloaded](https://app.box.com/s/r4xzm4xtzdqhmg4rbwfcahj9tee3ojbl)
 
 
-## Current Results (Not an average)
+## Current Results
 
 - OS Platform and Distribution: Linux Ubuntu 18.04
 - Device: CPU
