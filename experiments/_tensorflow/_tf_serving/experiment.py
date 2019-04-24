@@ -32,5 +32,5 @@ def run():
 """
 docker run -p 8500:8500 -p 8501:8501 --name tfserving \
 --mount type=bind,source=/home/hhsecond/mypro/benchmarks/experiments/data/tf_serving_builds/,\
-target=/models/resnet -e MODEL_NAME=resnet -t tensorflow/serving
+target=/models/resnet -e MODEL_NAME=resnet -t hhsecond/tensorflow-serving-devel
 """
