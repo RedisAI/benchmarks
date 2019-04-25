@@ -19,7 +19,7 @@ def wrapper(init):
     init.con.modelrun('model', input=['image'], output=['out'])
 
 
-def run(config, Reporter):
+def run(config, reporter):
     init(config)
-    with Reporter() as reporter:
+    with reporter:
         reporter.run(config['exp_count'], wrapper, init)

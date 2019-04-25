@@ -19,11 +19,11 @@ def init(config):
     init.logits_tensor = graph.get_tensor_by_name('output:0')
 
 
-def run(config, Reporter):
+def run(config, reporter):
     init(config)
     with tf.Session(graph=init.graph) as sess:
         sess.run([tf.global_variables_initializer()])
-        with Reporter() as reporter:
+        with reporter:
             reporter.run(
                 config['exp_count'],
                 sess.run,

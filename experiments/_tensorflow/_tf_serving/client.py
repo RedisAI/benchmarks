@@ -25,7 +25,7 @@ def wrapper(init):
     # TODO: make sure wrapper is doing new request
 
 
-def run(config, Reporter):
+def run(config, reporter):
     init(config)
-    with Reporter() as reporter:
+    with reporter:
         reporter.run(config['exp_count'], wrapper, init)

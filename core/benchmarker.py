@@ -35,10 +35,11 @@ class BenchmarkManager:
                         subconfigs['exp_count'] = config['exp_count']
                         fn = cls._experiment_dict[backend][exp]
                         if exp == 'native':
-                            fn(subconfigs, Reporter)
+                            fn(subconfigs, Reporter(backend, m, exp, device))
                         else:
                             if not subconfigs.get('docker'):
                                 # TODO : remove this hack
                                 continue
                             with Dockering(subconfigs['docker']) as server:
-                                fn(subconfigs, Reporter)
+                                fn(subconfigs, Reporter(backend, m, exp, device))
+        Reporter.summarize()

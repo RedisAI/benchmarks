@@ -8,7 +8,7 @@ def init(config):
     init.image = torch.from_numpy(image)
 
 
-def run(config, Reporter):
+def run(config, reporter):
     init(config)
-    with Reporter() as reporter:
+    with reporter:
         reporter.run(config['exp_count'], init.model, init.image)

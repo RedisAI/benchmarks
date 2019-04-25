@@ -7,10 +7,10 @@ def init():
     init.img_list = get_one_image().tolist()
 
 
-def run(config, Reporter):
+def run(config, reporter):
     # TODO: sending as list is not the best way
     init()
-    with Reporter() as reporter:
+    with reporter:
         reporter.run(
             config['exp_count'],
             requests.post,
