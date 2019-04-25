@@ -3,7 +3,7 @@ import numpy as np
 import torch
 
 # TODO: make it configurable
-pt_model_path = '/home/hhsecond/mypro/benchmarks/experiments/data/resnet50.pt'
+pt_model_path = '/root/data/resnet50.pt'
 
 
 app = Flask(__name__)

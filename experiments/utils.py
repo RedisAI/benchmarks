@@ -1,8 +1,7 @@
 from skimage import io
 import numpy as np
-from core.config import ConfigManager
-
-image_path = ConfigManager.image_path
+from core.config import config
+image_path = config['img_path']
 
 
 def get_one_image(transpose=None, img_type='numpy'):
