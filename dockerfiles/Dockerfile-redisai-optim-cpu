@@ -1,0 +1,147 @@
+FROM ubuntu:18.04 as builder1
+
+LABEL maintainer="Sherin Thomas <sherin@tensorwerk.com>"
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        build-essential \
+        curl \
+        git \
+        libcurl3-dev \
+        libfreetype6-dev \
+        libhdf5-serial-dev \
+        libpng-dev \
+        libzmq3-dev \
+        pkg-config \
+        python-dev \
+        rsync \
+        software-properties-common \
+        unzip \
+        zip \
+        zlib1g-dev \
+        openjdk-8-jdk \
+        openjdk-8-jre-headless \
+        && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN curl -fSsL -O https://bootstrap.pypa.io/get-pip.py && \
+    python get-pip.py && \
+    rm get-pip.py
+
+RUN pip --no-cache-dir install \
+        Pillow \
+        h5py \
+        ipykernel \
+        jupyter \
+        keras_applications \
+        keras_preprocessing \
+        matplotlib \
+        mock \
+        numpy \
+        scipy \
+        sklearn \
+        pandas \
+        && \
+    python -m ipykernel.kernelspec
+
+# Set up Bazel.
+
+# Running bazel inside a `docker build` command causes trouble, cf:
+#   https://github.com/bazelbuild/bazel/issues/134
+# The easiest solution is to set up a bazelrc file forcing --batch.
+RUN echo "startup --batch" >>/etc/bazel.bazelrc
+# Similarly, we need to workaround sandboxing issues:
+#   https://github.com/bazelbuild/bazel/issues/418
+RUN echo "build --spawn_strategy=standalone --genrule_strategy=standalone" \
+    >>/etc/bazel.bazelrc
+# Install the most recent bazel release.
+ENV BAZEL_VERSION 0.20.0
+WORKDIR /
+RUN mkdir /bazel && \
+    cd /bazel && \
+    curl -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36" -fSsL -O https://github.com/bazelbuild/bazel/releases/download/$BAZEL_VERSION/bazel-$BAZEL_VERSION-installer-linux-x86_64.sh && \
+    curl -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36" -fSsL -o /bazel/LICENSE.txt https://raw.githubusercontent.com/bazelbuild/bazel/master/LICENSE && \
+    chmod +x bazel-*.sh && \
+    ./bazel-$BAZEL_VERSION-installer-linux-x86_64.sh && \
+    cd / && \
+    rm -f /bazel/bazel-$BAZEL_VERSION-installer-linux-x86_64.sh
+
+# Download and build TensorFlow.
+WORKDIR /tensorflow
+RUN git clone --branch=r1.12 --depth=1 https://github.com/tensorflow/tensorflow.git .
+
+ENV CI_BUILD_PYTHON python
+
+RUN tensorflow/tools/ci_build/builds/configured CPU \
+    bazel build -c opt --copt=-mavx --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" \
+        --copt=-march="native"
+RUN bazel build --config opt //tensorflow/tools/lib_package:libtensorflow
+
+############################
+# Second Stage
+#############################
+FROM ubuntu:18.04 as builder2
+
+WORKDIR /redisai
+
+ENV DEPS "build-essential git ca-certificates curl unzip wget"
+
+# install latest cmake
+ADD https://cmake.org/files/v3.12/cmake-3.12.4-Linux-x86_64.sh /cmake-3.12.4-Linux-x86_64.sh
+RUN mkdir /opt/cmake
+RUN sh /cmake-3.12.4-Linux-x86_64.sh --prefix=/opt/cmake --skip-license
+RUN ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake
+RUN cmake --version
+
+# Set up a build environment
+RUN set -ex;\
+    deps="$DEPS";\
+    apt-get update;\
+    apt-get install -y --no-install-recommends $deps
+
+RUN git clone --depth=1 https://github.com/RedisAI/RedisAI.git .
+RUN set -ex;\
+    mkdir -p deps;\
+    DEPS_DIRECTORY=deps bash ./get_deps.sh cpu
+
+COPY --from=builder1 /tensorflow/bazel-bin/tensorflow/tools/lib_package/libtensorflow.tar.gz deps
+RUN cd deps && \
+    tar xf libtensorflow.tar.gz --no-same-owner --strip-components=1 -C /redisai/deps/install
+
+# Build the source
+RUN set -ex;\
+    rm -rf build;\
+    mkdir -p build;\
+    cd build;\
+    cmake -DDEPS_PATH=../deps/install ..;\
+    make;\
+    cd ..
+
+######################################
+# third stage
+#####################################
+FROM ubuntu:18.04
+ENV LD_LIBRARY_PATH /usr/lib/redis/modules/
+
+WORKDIR /data
+
+
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y wget make gcc libc6-dev && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    wget http://download.redis.io/redis-stable.tar.gz && \
+    tar xvzf redis-stable.tar.gz && \
+    cd redis-stable && \
+    make && make install && \
+    cd .. && rm -r redis-stable && rm redis-stable.tar.gz && \
+    apt-get purge -y --auto-remove wget make gcc libc6-dev
+
+RUN set -ex;\
+    mkdir -p "$LD_LIBRARY_PATH";
+
+COPY --from=builder2 /redisai/build/redisai.so "$LD_LIBRARY_PATH"
+COPY --from=builder2 /redisai/deps/install/lib/*.so* "$LD_LIBRARY_PATH"
+
+EXPOSE 6379
+CMD ["redis-server", "--protected-mode", "no", "--loadmodule", "/usr/lib/redis/modules/redisai.so"]
