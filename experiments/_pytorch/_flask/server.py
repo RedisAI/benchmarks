@@ -12,8 +12,8 @@ model = torch.jit.load(pt_model_path)
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    np_image = np.array(request.json['data'], dtype=np.float32)
-    torch_image = torch.from_numpy(np_image)
+    data = np.array(request.json['data'], dtype=np.float32)
+    torch_image = torch.from_numpy(data)
     with torch.no_grad():
         out = model(torch_image).numpy().tolist()
     response = {'prediction': out}
