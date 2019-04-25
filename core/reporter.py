@@ -34,7 +34,7 @@ class Reporter:
 
     def run(self, count, runner, *args, **kwargs):
         if self._count > 0:
-            raise RuntimeError('run() has been called already')
+            raise RuntimeError('    run() has been called already')
         else:
             self._count = count
         # dummy run
@@ -48,12 +48,12 @@ class Reporter:
         try:
             start = self._tlist.pop('__start')
         except KeyError:
-            warn('Reporter is not initiated properly')
+            warn('    Reporter is not initiated properly')
         try:
             stop = self._tlist.pop('__stop')
         except KeyError:
-            warn('Reporter is not exited properly')
-        print(f'Total Time Taken: {stop - start}')
+            warn('    Reporter is not exited properly')
+        print(f'    Total Time Taken: {stop - start}')
         temp = self._tlist.pop('__count_init')
         foraverage = []
         # dictionaries keeps the order
@@ -62,7 +62,7 @@ class Reporter:
             temp = val
         total = len(foraverage)
         if total != self._count:
-            warn('Something wrong! Raise an issue')
+            warn('    Something wrong! Raise an issue')
         avg = sum(foraverage) / total
-        print(f'Average time taken for {total} execution: {avg}')
+        print(f'    Average time taken for {total} execution: {avg}')
 
