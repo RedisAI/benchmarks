@@ -1,6 +1,6 @@
 from experiments import register_experiments
 from core import benchmarker
 
-register_experiments()
+register_experiments(benchmarker.BenchmarkManager)
 
 benchmarker.BenchmarkManager.run()
