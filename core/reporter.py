@@ -1,9 +1,12 @@
 import time
+import os
 from warnings import warn
 from collections import defaultdict
 
 from tqdm import tqdm
 import seaborn as sns
+
+from .config import config
 
 
 sns.set(style='whitegrid')
@@ -17,7 +20,7 @@ def save_chart(title, x_label, y_label, x_data, y_data):
     bplot.set_title(title)
     fig = bplot.get_figure()
     print(f'Saving {title}.png ..')
-    filename = title.replace(' ', '_')
+    filename = os.path.join(config['assets'], title.replace(' ', '_'))
     fig.savefig(f'{filename}.png')
 
 

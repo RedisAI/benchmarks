@@ -20,9 +20,9 @@ Models used in for the benchmark can be found [here](https://app.box.com/s/r4xzm
 - Tensorflow version: 1.12.0
 - TensorFlow optimizations: ON
 
-![RedisAI Benchmarking resnet running on pytorch:cpu](./resnet_running_on_pytorch:cpu.png, " Resnet running on PyTorch:CPU")
+![RedisAI Benchmarking resnet running on pytorch:cpu](assets/resnet_running_on_pytorch:cpu.png, " Resnet running on PyTorch:CPU")
 
-![RedisAI Benchmarking resnet running on tensorflow:cpu](./resnet_running_on_tensorflow:cpu.png, " Resnet running on Tensorflow:CPU")
+![RedisAI Benchmarking resnet running on tensorflow:cpu](assets/resnet_running_on_tensorflow:cpu.png, " Resnet running on Tensorflow:CPU")
 
 ## Run experiments
 
