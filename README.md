@@ -10,7 +10,7 @@ This repo aims to benchmark RedisAI against everything else which includes
 - RedisAI vs MxNet Model Server (upcoming)
 - RedisAI vs TensorRT (upcoming)
 
-Models used in for the benchmark can be found [here](https://app.box.com/s/r4xzm4xtzdqhmg4rbwfcahj9tee3ojbl) and the docker images can be found in the docker hub
+Models used in for the benchmark can be found [here](https://app.box.com/s/r4xzm4xtzdqhmg4rbwfcahj9tee3ojbl) and the docker images can be found in the [docker hub](https://hub.docker.com/r/tensorwerk/raibenchmarks)
 
 ## Current Results
 
@@ -20,9 +20,9 @@ Models used in for the benchmark can be found [here](https://app.box.com/s/r4xzm
 - Tensorflow version: 1.12.0
 - TensorFlow optimizations: ON
 
-![RedisAI Benchmarking resnet running on pytorch:cpu](resnet_running_on_pytorch:cpu.png, " Resnet running on PyTorch:CPU")
+![RedisAI Benchmarking resnet running on pytorch:cpu](./resnet_running_on_pytorch:cpu.png, " Resnet running on PyTorch:CPU")
 
-![RedisAI Benchmarking resnet running on tensorflow:cpu](resnet_running_on_tensorflow:cpu.png, " Resnet running on Tensorflow:CPU")
+![RedisAI Benchmarking resnet running on tensorflow:cpu](./resnet_running_on_tensorflow:cpu.png, " Resnet running on Tensorflow:CPU")
 
 ## Run experiments
 

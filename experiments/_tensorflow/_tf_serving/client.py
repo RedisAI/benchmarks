@@ -31,4 +31,5 @@ def run(config, reporter):
     with reporter:
         generator = reporter.run(config['exp_count'], wrapper, init)
         for output in generator:
+            # todo: test the actual output
             assert output.shape == (1001,)
