@@ -4,15 +4,15 @@ This repo aims to benchmark RedisAI against everything else which includes
 
 - RedisAI with Tensorflow as backend vs Tensorflow python runtime
 - RedisAI with PyTorch as backend vs PyTorch python runtime
+- RedisAI vs GRPC servers (Tensorflow Serving & custom GRPC server for PyTorch and ONNX)
+- RedisAI vs Flask servers
 - RedisAI with ONNX as backend vs ONNXRuntime (upcoming)
-- RedisAI vs Tensorflow Serving (upcoming)
 - RedisAI vs MxNet Model Server (upcoming)
 - RedisAI vs TensorRT (upcoming)
 
-Models used in for the benchmark will be autodownloaded if it doesn't exist in the `data` directory. However, if requires, it can be manually [downloaded](https://app.box.com/s/r4xzm4xtzdqhmg4rbwfcahj9tee3ojbl)
+Models used in for the benchmark can be found [here](https://app.box.com/s/r4xzm4xtzdqhmg4rbwfcahj9tee3ojbl) and the docker images can be found in the docker hub
 
-
-## Current Results (Not an average)
+## Current Results
 
 - OS Platform and Distribution: Linux Ubuntu 18.04
 - Device: CPU
@@ -20,18 +20,38 @@ Models used in for the benchmark will be autodownloaded if it doesn't exist in t
 - Tensorflow version: 1.12.0
 - TensorFlow optimizations: ON
 
-|   Models  | TF Python  | TF RedisAI |
-| --------- | ---------- | ---------- |
-|   YoloV3  |   0.280    |   0.295    |
-| ResNet50  |   0.038    |   0.041    |
+![RedisAI Benchmarking resnet running on pytorch:cpu](resnet_running_on_pytorch:cpu.png, " Resnet running on PyTorch:CPU")
 
+![RedisAI Benchmarking resnet running on tensorflow:cpu](resnet_running_on_tensorflow:cpu.png, " Resnet running on Tensorflow:CPU")
 
-- OS Platform and Distribution: Linux Ubuntu 18.04
-- Device: CPU
-- Python version: 3.6
-- PyTorch: 1.0.1
+## Run experiments
 
-|   Models  | PT Python  | PT RedisAI |
-| --------- | ---------- | ---------- |
-|   YoloV3  |   0.321    |   0.333    |
-| ResNet50  |   0.062    |   0.082    |
+For running the benchamarks (right now it runs with Tensorflow which is built with optimizations ON, if your hardware doesn't support it, keen an eye on this repo, we'll update it soon with prebuilt binary of TF available in pypy), cd to the repo and run 
+
+```bash
+python run.py
+```
+
+This will pull the required docker images, bring it up when requires and run the clients for each.
+Available command line configurations are 
+
+```
+usage: run.py [-h] [--device {cpu,gpu,all}]
+              [--backend {tensorflow,pytorch,all}] [--count COUNT] [--exp ...]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --device {cpu,gpu,all}
+                        Run benchmarking for CPU or GPU or both
+  --backend {tensorflow,pytorch,all}
+                        Run benchmarking for tensorflow or pytoch or onnx
+  --count COUNT         How many iterations to take average from, for each
+                        experiment
+  --exp ...
+```
+
+`--exp` is for specifying experiments which are currently native, flask, redisai, grpc. Make sure `--exp` is specified at the end of your command. An example command to run only redisai and flask of pytorch, only two times is below
+
+```bash
+python run.py --backend pytorch --count 2 --exp flask redisai
+```
