@@ -12,6 +12,7 @@ This repo aims to benchmark RedisAI against everything else which includes
 
 Models used in for the benchmark can be found [here](https://app.box.com/s/r4xzm4xtzdqhmg4rbwfcahj9tee3ojbl) and the docker images can be found in the [docker hub](https://hub.docker.com/r/tensorwerk/raibenchmarks)
 
+
 ## Current Results
 
 - OS Platform and Distribution: Linux Ubuntu 18.04
