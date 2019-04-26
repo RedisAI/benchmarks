@@ -1,5 +1,6 @@
 import grpc
 import tensorflow as tf
+import numpy as np
 from tensorflow_serving.apis import predict_pb2
 from tensorflow_serving.apis import prediction_service_pb2_grpc
 
@@ -18,8 +19,8 @@ def init(config):
 def wrapper(init):
     init.request.inputs['images'].CopyFrom(
         tf.contrib.util.make_tensor_proto(init.image))
-    result_future = init.stub.Predict(init.request, 10.25)
-    return result_future
+    result = init.stub.Predict(init.request, 10.25)
+    return np.array(result.outputs['output'].float_val)
     # TODO: what the heck is this 10.25
     # TODO: result_future.add_done_callback(_callback)
     # TODO: make sure wrapper is doing new request
@@ -28,4 +29,6 @@ def wrapper(init):
 def run(config, reporter):
     init(config)
     with reporter:
-        reporter.run(config['exp_count'], wrapper, init)
+        generator = reporter.run(config['exp_count'], wrapper, init)
+        for output in generator:
+            assert output.shape == (1001,)

@@ -24,8 +24,10 @@ def run(config, reporter):
     with tf.Session(graph=init.graph) as sess:
         sess.run([tf.global_variables_initializer()])
         with reporter:
-            reporter.run(
+            generator = reporter.run(
                 config['exp_count'],
                 sess.run,
                 init.logits_tensor,
                 feed_dict={init.images_tensor: init.image})
+            for output in generator:
+                assert output.shape == (1, 1001)

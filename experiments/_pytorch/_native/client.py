@@ -11,4 +11,6 @@ def init(config):
 def run(config, reporter):
     init(config)
     with reporter:
-        reporter.run(config['exp_count'], init.model, init.image)
+        generator = reporter.run(config['exp_count'], init.model, init.image)
+        for output in generator:
+            assert output.shape == (1, 1000)

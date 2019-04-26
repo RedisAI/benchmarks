@@ -17,7 +17,8 @@ def save_chart(title, x_label, y_label, x_data, y_data):
     bplot.set_title(title)
     fig = bplot.get_figure()
     print(f'Saving {title}.png ..')
-    fig.savefig(f'{title}.png')
+    filename = title.replace(' ', '_')
+    fig.savefig(f'{filename}.png')
 
 
 class Reporter:
@@ -56,7 +57,7 @@ class Reporter:
         runner(*args, **kwargs)
         self._step(f'__count_init')
         for i in tqdm(range(count)):
-            runner(*args, **kwargs)
+            yield runner(*args, **kwargs)
             self._step(f'__count_{i}')
 
     def _get_average(self):

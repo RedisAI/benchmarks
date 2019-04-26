@@ -21,9 +21,12 @@ def init(config):
 def wrapper(init):
     init.con.tensorset('image', init.image)
     init.con.modelrun('graph', input=['image'], output=['output'])
+    return init.con.tensorget('output', as_type=rai.BlobTensor).to_numpy()
 
 
 def run(config, reporter):
     init(config)
     with reporter:
-        reporter.run(config['exp_count'], wrapper, init)
+        generator = reporter.run(config['exp_count'], wrapper, init)
+        for output in generator:
+            assert output.shape == (1, 1001)

@@ -11,8 +11,10 @@ def run(config, reporter):
     # TODO: sending as list is not the best way
     init()
     with reporter:
-        reporter.run(
+        generator = reporter.run(
             config['exp_count'],
             requests.post,
             config['server'],
             json={'data': init.img_list})
+        for output in generator:
+            assert len(output.json()['prediction'][0]) == 1001
