@@ -13,14 +13,13 @@ def init(config):
     init.request = predict_pb2.PredictRequest()
     init.request.model_spec.name = 'resnet'
     init.request.model_spec.signature_name = 'serving_default'
-    init.image = get_one_image()
+    init.image = tf.contrib.util.make_tensor_proto(get_one_image())
 
 
 def wrapper(init):
-    init.request.inputs['images'].CopyFrom(
-        tf.contrib.util.make_tensor_proto(init.image))
+    init.request.inputs['images'].CopyFrom(init.image)
     result = init.stub.Predict(init.request, 10.25)
-    return np.array(result.outputs['output'].float_val)
+    return result.outputs['output'].float_val
     # TODO: what the heck is this 10.25
     # TODO: result_future.add_done_callback(_callback)
     # TODO: make sure wrapper is doing new request
@@ -32,4 +31,4 @@ def run(config, reporter):
         generator = reporter.run(config['exp_count'], wrapper, init)
         for output in generator:
             # todo: test the actual output
-            assert output.shape == (1001,)
+            assert len(output) == 1001
