@@ -15,10 +15,12 @@ class ConfigManager:
     # TODO: perhaps make it configurable
     tf_flask_path = os.path.join(root, 'experiments/_tensorflow/_flask')
     pt_flask_path = os.path.join(root, 'experiments/_pytorch/_flask')
+    pt_grpc_path = os.path.join(root, 'experiments/_pytorch/_grpc_server')
     models = ['resnet']
     experiments = ['native', 'redisai', 'flask', 'grpc']
     flask_url = 'http://127.0.0.1:8000/predict'
     tfserving_grpc_url = 'localhost:8500'
+    pt_grpc_url = 'localhost:50051'
     redisai_url = 'localhost:6379'
 
     def __init__(self, args):
@@ -31,6 +33,7 @@ class ConfigManager:
                 f'Given experiment is not defined: use from {self.experiments}'
             self.experiments = args.exp
         self.exp_count = args.count
+        self.no_docker = args.no_docker
 
     def get_config_dict(self):
         # TODO: Move it to a config file
@@ -65,7 +68,8 @@ class ConfigManager:
                             'ports': {8500: 8500, 8501: 8501},
                             # TODO: change this hardcoded resnet
                             'volumes': {self.tf_serving_path: '/models/resnet'},
-                            'envs': {'MODEL_NAME': 'resnet'}}},
+                            'envs': {
+                                'MODEL_NAME': 'resnet'}}},
                     'gpu': {}}},
             'pytorch': {
                 'native': {
@@ -90,7 +94,16 @@ class ConfigManager:
                             'ports': {8000: 8000}}},
                     'gpu': {}},
                 'grpc': {
-                    'cpu': {},
+                    'cpu': {
+                        'server': self.pt_grpc_url,
+                        'docker': {
+                            'image': 'tensorwerk/raibenchmarks:grpc-cpu',
+                            'ports': {50051: 50051},
+                            'volumes': {
+                                self.assets: '/root/data',
+                                self.pt_grpc_path: '/root'}
+                        }
+                    },
                     'gpu': {}}},
             'onnx': {
                 'native': {
@@ -119,6 +132,8 @@ class ConfigManager:
                 for e in self.experiments:
                     out['instances'][b][m][e] = {}
                     for d in self.devices:
+                        if self.no_docker:
+                            temp[b][e][d]['docker'] = None
                         out['instances'][b][m][e][d] = temp[b][e][d]
         return out
 
@@ -139,7 +154,9 @@ parser.add_argument(
 parser.add_argument(
     '--exp', nargs=argparse.REMAINDER, type=str.lower,
     default='all')
-
+parser.add_argument(
+    '--no-docker', action='store_true',
+    help='Disable docker servers and try to connect servers running in the machine')
 
 config = ConfigManager(parser.parse_args()).get_config_dict()
 

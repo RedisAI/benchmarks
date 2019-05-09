@@ -5,6 +5,7 @@ from collections import defaultdict
 
 from tqdm import tqdm
 import seaborn as sns
+import matplotlib.pyplot as plt
 
 from .config import config
 
@@ -13,15 +14,16 @@ sns.set(style='whitegrid')
 
 
 def save_chart(title, x_label, y_label, x_data, y_data):
+    plt.figure()
+    # TODO: fix issue with last char information leaking to new chart
     if len(x_data) != len(y_data):
         raise Exception('Length of X is not same as Y')
     bplot = sns.barplot(x_data, y_data)
     bplot.set(xlabel=x_label, ylabel=y_label)
     bplot.set_title(title)
-    fig = bplot.get_figure()
     print(f'Saving {title}.png ..')
     filename = os.path.join(config['assets'], title.replace(' ', '_'))
-    fig.savefig(f'{filename}.png')
+    plt.savefig(f'{filename}.png')
 
 
 class Reporter:

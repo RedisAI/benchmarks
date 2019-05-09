@@ -37,3 +37,8 @@ if __name__ == '__main__':
     d = Dockering('tensorwerk/raibenchmarks:flask-optim-cpu')
     d.up()
     d.down()
+"""
+docker run --read-only -v /home/hhsecond/mypro/benchmarks/assets:/root/data \
+    --read-only -v /home/hhsecond/mypro/benchmarks/experiments/_tensorflow/_flask:/root \
+    -p 8000:8000 --name server --rm tensorwerk/raibenchmarks:flask-optim-cpu
+"""
