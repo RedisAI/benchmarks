@@ -80,7 +80,7 @@ RUN ln -s -f /usr/bin/python3 /usr/bin/python && \
 	python get-pip.py && \
     rm get-pip.py && \
 	pip install tensorflow-*.whl && \
-	pip install https://download.pytorch.org/whl/cpu/torch-1.0.1.post2-cp36-cp36m-linux_x86_64.whl && \
+	pip install https://download.pytorch.org/whl/cpu/torch-1.1.0-cp36-cp36m-linux_x86_64.whl && \
 	pip install flask gunicorn && \
 	rm tensorflow-*.whl
 

@@ -55,7 +55,7 @@ RUN echo "startup --batch" >>/etc/bazel.bazelrc
 RUN echo "build --spawn_strategy=standalone --genrule_strategy=standalone" \
     >>/etc/bazel.bazelrc
 # Install the most recent bazel release.
-ENV BAZEL_VERSION 0.20.0
+ENV BAZEL_VERSION 0.19.1
 WORKDIR /
 RUN mkdir /bazel && \
     cd /bazel && \
@@ -99,7 +99,7 @@ RUN set -ex;\
     apt-get update;\
     apt-get install -y --no-install-recommends $deps
 
-RUN git clone --depth=1 https://github.com/RedisAI/RedisAI.git .
+RUN git clone https://github.com/RedisAI/RedisAI.git .
 RUN set -ex;\
     mkdir -p deps;\
     DEPS_DIRECTORY=deps bash ./get_deps.sh cpu
@@ -113,7 +113,7 @@ RUN set -ex;\
     rm -rf build;\
     mkdir -p build;\
     cd build;\
-    cmake -DDEPS_PATH=../deps/install ..;\
+    cmake -DDEPS_PATH=../deps/install -DCMAKE_BUILD_TYPE=Release ..;\
     make;\
     cd ..
 
