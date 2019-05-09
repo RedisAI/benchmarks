@@ -1,0 +1,26 @@
+FROM ubuntu:18.04
+
+LABEL maintainer="Sherin Thomas <sherin@tensorwerk.com>"
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	curl \
+	zip \
+	unzip \
+	ca-certificates \
+	build-essential \
+	python3-dev && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    curl -fSsL -O https://bootstrap.pypa.io/get-pip.py && \
+    ln -s -f /usr/bin/python3 /usr/bin/python && \
+    python get-pip.py && \
+    rm get-pip.py && \
+    pip --no-cache-dir install \
+    grpcio \
+    requests \
+    grpcio-tools \
+    https://download.pytorch.org/whl/cpu/torch-1.1.0-cp36-cp36m-linux_x86_64.whl
+
+
+WORKDIR /root
+CMD ["python", "server.py"]

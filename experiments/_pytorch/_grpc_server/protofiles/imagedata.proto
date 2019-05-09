@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+// python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. imagedata.proto
+
+service Predictor {
+	rpc GetPrediction (ImageData) returns (PredictionClass) {}
+}
+
+
+message ImageData {
+	bytes image = 1;
+	int32 height = 2;
+	int32 width = 3;
+	string dtype = 4;
+}
+
+
+message PredictionClass {
+	repeated float output = 1;
+}
