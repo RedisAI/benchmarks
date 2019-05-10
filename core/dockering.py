@@ -22,6 +22,8 @@ class Dockering:
         if not self.container.logs():
             print('    Waiting for container to come up...')
             time.sleep(1)
+        # delay giving for services inside the container to come up
+        time.sleep(3)
 
     def down(self):
         self.container.remove(v=True, force=True)

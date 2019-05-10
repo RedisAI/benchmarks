@@ -19,7 +19,6 @@ def init(config):
 
 
 def run(config, reporter):
-    print('run')
     init(config)
     with reporter:
         generator = reporter.run(config['exp_count'], init.stub.GetPrediction, init.image)
