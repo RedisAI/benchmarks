@@ -11,6 +11,7 @@ class ConfigManager:
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     assets = os.path.join(root, 'assets')
     images_path = os.path.join(assets, 'images/guitar.jpg')
+    image_class = 402  # guitar
     tf_serving_path = os.path.join(assets, 'tf_serving_builds')
     # TODO: perhaps make it configurable
     tf_flask_path = os.path.join(root, 'experiments/_tensorflow/_flask')
@@ -124,7 +125,8 @@ class ConfigManager:
             'exp_count': self.exp_count,
             'root': self.root,
             'assets': self.assets,
-            'img_path': self.images_path}
+            'img_path': self.images_path,
+            'img_class': self.image_class}
         for b in self.backends:
             out['instances'][b] = {}
             for m in self.models:

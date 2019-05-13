@@ -1,10 +1,12 @@
 import requests
 
+import numpy as np
 from experiments.utils import get_one_image
 
 
 def init():
-    init.img_list = get_one_image(transpose=(2, 0, 1)).tolist()
+    init.img_list, init.img_class = get_one_image(transpose=(2, 0, 1))
+    init.img_list = init.img_list.tolist()
 
 
 def run(config, reporter):
@@ -17,5 +19,6 @@ def run(config, reporter):
             config['server'],
             json={'data': init.img_list})
         for output in generator:
-            # TODO: Perhaps raise the error later without crashing python
-            assert len(output.json()['prediction'][0]) == 1000
+            output = output.json()['prediction'][0]
+            assert len(output) == 1000
+            assert np.argmax(output) == init.img_class

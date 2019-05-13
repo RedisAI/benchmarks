@@ -25,6 +25,8 @@ Models used in for the benchmark can be found [here](https://app.box.com/s/r4xzm
 
 ![RedisAI Benchmarking resnet running on tensorflow:cpu](assets/resnet_running_on_tensorflow:cpu.png " Resnet running on Tensorflow:CPU")
 
+(grpc for tensorflow is TFServing)
+
 ## Run experiments
 
 For running the benchamarks (right now it runs with Tensorflow which is built with optimizations ON, if your hardware doesn't support it, keen an eye on this repo, we'll update it soon with prebuilt binary of TF available in pypy), cd to the repo and run 

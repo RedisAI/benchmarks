@@ -2,10 +2,11 @@ import grpc
 from .protofiles.imagedata_pb2 import ImageData
 from .protofiles.imagedata_pb2_grpc import PredictorStub
 from experiments.utils import get_one_image
+import numpy as np
 
 
 def init(config):
-    img = get_one_image(transpose=(2, 0, 1))
+    img, init.img_class = get_one_image(transpose=(2, 0, 1))
     imgdata = ImageData()
     # protobuf assumes the shape of the image is (1, 3, height, width)
     # where 1 is the batchsize and 3 is number of channels
@@ -24,3 +25,4 @@ def run(config, reporter):
         generator = reporter.run(config['exp_count'], init.stub.GetPrediction, init.image)
         for output in generator:
             assert len(output.output) == 1000
+            assert np.argmax(output.output) == init.img_class

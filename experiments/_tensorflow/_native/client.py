@@ -14,7 +14,7 @@ def init(config):
             return_elements=None,
             name="")
     init.graph = graph
-    init.image = get_one_image()
+    init.image, init.img_class = get_one_image()
     init.images_tensor = graph.get_tensor_by_name('images:0')
     init.logits_tensor = graph.get_tensor_by_name('output:0')
 
@@ -31,3 +31,4 @@ def run(config, reporter):
                 feed_dict={init.images_tensor: init.image})
             for output in generator:
                 assert output.shape == (1, 1001)
+                assert output.argmax() - 1 == init.img_class

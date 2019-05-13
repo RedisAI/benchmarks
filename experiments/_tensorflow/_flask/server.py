@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify
 import numpy as np
 import tensorflow as tf
 
-# TODO: make it configurable
 tf_model_path = '/root/data/resnet50.pb'
 
 with tf.gfile.GFile(tf_model_path, "rb") as f:

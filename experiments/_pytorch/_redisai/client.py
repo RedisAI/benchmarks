@@ -10,7 +10,7 @@ def init(config):
     port = config['server'].split(':')[1]
     init.con = rai.Client(host=host, port=port)
     init.con.modelset('model', rai.Backend.torch, rai.Device.cpu, model)
-    image = get_one_image(transpose=(2, 0, 1))
+    image, init.img_class = get_one_image(transpose=(2, 0, 1))
     init.image = rai.BlobTensor.from_numpy(image)
 
 
@@ -26,3 +26,4 @@ def run(config, reporter):
         generator = reporter.run(config['exp_count'], wrapper, init)
         for output in generator:
             assert output.shape == (1, 1000)
+            assert output.argmax() == init.img_class

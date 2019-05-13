@@ -14,7 +14,7 @@ def init(config):
     init.con.modelset(
         'graph', rai.Backend.tf, rai.Device.cpu, graph,
         input=inputs, output=outputs)
-    image = get_one_image()
+    image, init.img_class = get_one_image()
     init.image = rai.BlobTensor.from_numpy(image)
 
 
@@ -30,3 +30,4 @@ def run(config, reporter):
         generator = reporter.run(config['exp_count'], wrapper, init)
         for output in generator:
             assert output.shape == (1, 1001)
+            assert output.argmax() - 1 == init.img_class

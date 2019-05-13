@@ -13,7 +13,8 @@ def init(config):
     init.request = predict_pb2.PredictRequest()
     init.request.model_spec.name = 'resnet'
     init.request.model_spec.signature_name = 'serving_default'
-    init.image = tf.contrib.util.make_tensor_proto(get_one_image())
+    image, init.img_class = get_one_image()
+    init.image = tf.contrib.util.make_tensor_proto(image)
 
 
 def wrapper(init):
@@ -30,5 +31,5 @@ def run(config, reporter):
     with reporter:
         generator = reporter.run(config['exp_count'], wrapper, init)
         for output in generator:
-            # todo: test the actual output
             assert len(output) == 1001
+            assert np.array(output).argmax() - 1 == init.img_class
