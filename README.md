@@ -1,4 +1,4 @@
-# This is a very OLD benchmarking suite we have made for experimenting and keeping it here for the records. The numbers/results shown here are not valild anymore. RedisAI has grown quite a lot since then. Head over to the [new benchmarking suite](https://github.com/RedisAI/aibench) we have made for the latest results
+# This is a very OLD benchmarking suite built for experimenting. The numbers/results shown here are not valild anymore. RedisAI has grown quite a lot since then. Head over to the [new benchmarking suite](https://github.com/RedisAI/aibench) for the latest results
 
 # benchmarks
 
