@@ -1,3 +1,5 @@
+# This is a very OLD benchmarking suite we have made for experimenting and keeping it here for the records. The numbers/results shown here are not valild anymore. RedisAI has grown from there, quite a lot since then. Head over to the [new benchmarking suite (https://github.com/RedisAI/aibench) we have made for the latest results
+
 # benchmarks
 
 This repo aims to benchmark RedisAI against everything else which includes
